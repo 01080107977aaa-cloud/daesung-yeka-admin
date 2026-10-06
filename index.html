@@ -314,7 +314,7 @@ async function loadOrders(){
  orders=(Array.isArray(data)?data:[]).map(x=>{
   const b=splitBuyer(x.buyer_name);
   const items=(x.items||[]).map(it=>({product_id:it.product_id||'',product_name:it.product_name||'',variety:it.variety||'',weight:it.weight||'',option_id:it.option_id||'',unit_price:Number(it.unit_price||0),quantity:Number(it.quantity||1),amount:Number(it.amount||0)}));
-  return {dbId:x.id,id:x.order_no||x.id,nick:b.nick,name:b.name,phone:x.buyer_phone||'',payer:x.depositor_name||'',address:x.address||'',detailAddress:x.detail_address||'',postalCode:x.postal_code||'',memo:x.delivery_memo||'',items,product:items.map(it=>[it.product_name,it.variety,it.weight].filter(Boolean).join(' / ')).join(', '),amount:Number(x.total_amount||0),grossAmount:Number(x.gross_amount||0),status:statusOf(x),track:x.tracking_number||'',createdAt:x.created_at};
+  return {dbId:x.id,id:x.order_no||x.id,nick:b.nick,name:b.name,phone:x.buyer_phone||'',payer:x.depositor_name||'',address:x.address||'',detailAddress:x.detail_address||'',postalCode:x.postal_code||'',memo:x.delivery_memo||'',cashReceiptType:x.cash_receipt_type||'미신청',cashReceiptNumber:x.cash_receipt_number||'',items,product:items.map(it=>[it.product_name,it.variety,it.weight].filter(Boolean).join(' / ')).join(', '),amount:Number(x.total_amount||0),grossAmount:Number(x.gross_amount||0),status:statusOf(x),track:x.tracking_number||'',createdAt:x.created_at};
  });
  renderOrders();updateOrderCards();renderSettlement();
 }
@@ -338,7 +338,7 @@ function renderOrders(list=orders){
    <div class="detail-box"><b>주문자</b><br>${esc(o.name)} · ${esc(o.nick)}<br>${esc(o.phone)}</div>
    <div class="detail-box"><b>입금자</b><br>${esc(o.payer||'-')}</div>
    <div class="detail-box"><b>상품</b><br>${esc(o.product||'-')}<br>정상상품금액 ${money(o.grossAmount)}</div>
-   <div class="detail-box"><b>배송지</b><br>${esc(o.address||'-')}<br>${o.detailAddress?'상세주소: '+esc(o.detailAddress):'상세주소: -'}<br>메모: ${esc(o.memo||'-')}</div>
+   <div class="detail-box"><b>현금영수증</b><br>${esc(o.cashReceiptType||'미신청')} · 발급번호 <b>${esc(o.cashReceiptNumber||'미입력')}</b></div><div class="detail-box"><b>배송지</b><br>${esc(o.address||'-')}<br>${o.detailAddress?'상세주소: '+esc(o.detailAddress):'상세주소: -'}<br>메모: ${esc(o.memo||'-')}</div>
   </div><div class="toolbar" style="margin-top:10px">
    <button class="small" onclick="window.editCustomer(${i})">주문자 수정</button>
    <button class="small" onclick="window.editOrderProduct(${i})">상품·금액 수정</button>
